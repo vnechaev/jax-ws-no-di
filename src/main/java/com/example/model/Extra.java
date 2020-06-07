@@ -2,6 +2,8 @@ package com.example.model;
 
 import javax.xml.bind.annotation.*;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Extra {
 
     @XmlAttribute

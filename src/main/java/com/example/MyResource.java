@@ -63,10 +63,12 @@ public class MyResource {
     @Produces(MediaType.APPLICATION_XML)
     public Response getsfd() {
 
-        Response response = new Response("234");
+        Response response = new Response();
+        response.setResultCode("234");
         Extra extra = new Extra();
         extra.setName("balance");
         extra.setValue("100");
+        response.getExtraList().add(extra);
 //        response.setExtraList(Collections.singletonList(extra));
         return response;
     }
