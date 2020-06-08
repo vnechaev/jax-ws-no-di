@@ -1,6 +1,7 @@
 package com.example.db;
 
 import com.example.model.User;
+import com.example.model.addUser.ResultCode;
 import com.example.model.request.RequestUser;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,22 +22,24 @@ public class UserDAO implements IUserDb {
     }
 
     @Override
-    public boolean addUser(RequestUser request) throws Exception {
+    public ResultCode addUser(RequestUser request) throws Exception {
         User user = request.user();
         try {
-            int rowNums = jdbcTemplate.update("insert into demodb.users values (?, ?, ?)", null, user.getLogin(), user.getPassword());
-            if (rowNums == 1) {
-                System.out.println( String.format("User with login %s was succcessfully added", user.getLogin()));
-                return true;
-            } else {
-                System.out.println("error while adding");
-                return false;
+            String sql = "SELECT COUNT(1) FROM demodb.users WHERE login = ?";
+            boolean exists = false;
+            int count = jdbcTemplate.queryForObject(sql, new Object[] { user.getLogin() }, Integer.class);
+            exists = count > 0;
+            if (exists){
+                return ResultCode.LOGIN_EXIST;
             }
+            jdbcTemplate.update("insert into demodb.users values (?, ?, ?)", null, user.getLogin(), user.getPassword());
+            return ResultCode.SUCCESS;
+
         } catch (DataAccessException e) {
             System.out.println("error occured");
             e.printStackTrace();
             System.out.println(e.getMessage());
-            return false;
+            return ResultCode.TECHNICAL_ERROR;
         }
     }
 

@@ -3,9 +3,11 @@ package com.example;
 import com.example.db.IUserDb;
 import com.example.db.UserDAO;
 import com.example.model.Extra;
+import com.example.model.addUser.ResultCode;
 import com.example.model.request.AddUserRequest;
 import com.example.model.request.Request;
 import com.example.model.request.RequestTypes;
+import com.example.model.response.AddUserResponse;
 import com.example.model.response.Response;
 import com.example.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -99,23 +101,17 @@ public class MyResource {
 
         System.out.println(request);
         AddUserRequest addUserRequest = new AddUserRequest(request);
-        if (request.getRequestType().equals(RequestTypes.ADD_USER.getName())) {
-            boolean result = false;
-            result = userDAO.addUser(addUserRequest);
-            if (result) {
-            } else System.out.println("errorsdfksjdf");
-        } else {
-            System.out.println("incorrect method");
-        }
-
-        Response response = new Response();
-        response.setResultCode("234");
-        Extra extra = new Extra();
-        extra.setName("balance");
-        extra.setValue("100");
-        response.getExtraList().add(extra);
+        ResultCode resultCode = userDAO.addUser(addUserRequest);
+        AddUserResponse addUserResponse = new AddUserResponse(resultCode.getCode());
+//        Response response = new Response();
+//        response.setResultCode(resultCode.);
+//        Extra extra = new Extra();
+//        extra.setName("balance");
+//        extra.setValue("100");
+//        response.getExtraList().add(extra);
 //        response.setExtraList(Collections.singletonList(extra));
-        return response;
+        System.out.println(addUserResponse.response());
+        return addUserResponse.response();
     }
 
 

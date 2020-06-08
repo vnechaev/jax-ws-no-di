@@ -23,6 +23,7 @@ public class Response {
         return extraList;
     }
 
+
     public void setResultCode(String resultCode) {
         this.resultCode = resultCode;
     }

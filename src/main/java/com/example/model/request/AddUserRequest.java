@@ -15,7 +15,7 @@ public class AddUserRequest implements RequestUser {
 
     @Override
     public User user() throws Exception {
-        if (!request.getRequestType().equals(RequestTypes.ADD_USER)) {
+        if (!request.getRequestType().equals(RequestTypes.ADD_USER.getName())) {
             throw new Exception("Incorrect type");
         } else {
             Map<String, String> map = new HashMap<>();
