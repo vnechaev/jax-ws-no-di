@@ -1,7 +1,5 @@
 package com.example.model;
 
-import com.example.model.request.Request;
-
 public class User {
     private String login;
 

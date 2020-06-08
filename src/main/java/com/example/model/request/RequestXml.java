@@ -10,14 +10,14 @@ import java.util.List;
 
 @XmlRootElement(name = "request")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Request {
+public class RequestXml {
     @XmlElement(name = "request-type")
     private String requestType;
 
     @XmlElement(name = "extra")
     private List<Extra> extraList;
 
-    public Request() {
+    public RequestXml() {
     }
 
     public String getRequestType() {

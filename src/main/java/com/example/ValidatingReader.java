@@ -5,7 +5,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.net.URL;
 
-import com.example.model.request.Request;
+import com.example.model.request.RequestXml;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.WebApplicationException;
@@ -17,7 +17,7 @@ import javax.xml.validation.*;
 
 @Provider
 @Consumes("application/xml")
-public class ValidatingReader implements MessageBodyReader<Request> {
+public class ValidatingReader implements MessageBodyReader<RequestXml> {
 
     @Context
     protected Providers providers;
@@ -27,7 +27,7 @@ public class ValidatingReader implements MessageBodyReader<Request> {
 
     public ValidatingReader() {
         try {
-            JAXBContext jc = JAXBContext.newInstance(Request.class);
+            JAXBContext jc = JAXBContext.newInstance(RequestXml.class);
             SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             URL schemaURL = null; // URL for your XML schema
 //            schema = sf.newSchema(schemaURL);
@@ -41,15 +41,15 @@ public class ValidatingReader implements MessageBodyReader<Request> {
     }
 
     public boolean isReadable(Class<?> arg0, Type arg1, Annotation[] arg2, MediaType arg3) {
-        return arg0 == Request.class;
+        return arg0 == RequestXml.class;
     }
 
-    public Request readFrom(Class<Request> arg0, Type arg1, Annotation[] arg2, MediaType arg3, MultivaluedMap<String, String> arg4, InputStream arg5)
+    public RequestXml readFrom(Class<RequestXml> arg0, Type arg1, Annotation[] arg2, MediaType arg3, MultivaluedMap<String, String> arg4, InputStream arg5)
             throws IOException, WebApplicationException {
         try {
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             unmarshaller.setSchema(schema);
-            return (Request) unmarshaller.unmarshal(arg5);
+            return (RequestXml) unmarshaller.unmarshal(arg5);
         } catch(JAXBException e) {
             throw new RuntimeException(e);
         }

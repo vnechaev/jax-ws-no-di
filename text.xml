@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<response>
+<responseXml>
     <result-code>234</result-code>
     <extra name="balance">100</extra>
-</response>
+</responseXml>
 

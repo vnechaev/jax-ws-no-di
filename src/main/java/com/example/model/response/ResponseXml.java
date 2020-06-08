@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @XmlRootElement(name = "response")
-public class Response {
+public class ResponseXml {
     @XmlElement(name = "result-code")
     private String resultCode;
 
     @XmlElement(name = "extra")
     private List<Extra> extraList;
 
-    public Response() {
+    public ResponseXml() {
         extraList = new ArrayList<Extra>();
     }
 

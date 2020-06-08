@@ -1,23 +1,23 @@
 package com.example.model.response;
 
 public class AddUserResponse implements IResponse {
-    private Response response;
+    private ResponseXml responseXml;
 
     public AddUserResponse(String resultCode) {
-        Response response = new Response();
-        response.setResultCode(resultCode);
-        this.response = response;
+        ResponseXml responseXml = new ResponseXml();
+        responseXml.setResultCode(resultCode);
+        this.responseXml = responseXml;
     }
 
     @Override
-    public Response response() {
-        return response;
+    public ResponseXml response() {
+        return responseXml;
     }
 
     @Override
     public String toString() {
         return "AddUserResponse{" +
-                "response=" + response +
+                "response=" + responseXml +
                 '}';
     }
 }
