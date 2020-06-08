@@ -24,10 +24,6 @@ public class Main {
      * @return Grizzly HTTP server.
      */
     public static HttpServer startServer() {
-        // create a resource config that scans for JAX-RS resources and providers
-        // in com.example package
-//        final ResourceConfig rc = new ResourceConfig().packages("com.example");
-        final ResourceConfig rc = new ResourceConfig();
 //        rc.setProperties(new Properties());
 
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -37,7 +33,17 @@ public class Main {
         dataSource.setUsername("demouser");
         dataSource.setPassword("demouser");
 
+        // create a resource config that scans for JAX-RS resources and providers
+        // in com.example package
+//        final ResourceConfig rc = new ResourceConfig();
+        final ResourceConfig rc = new ResourceConfig().packages("com.example");
         rc.register(new MyResource(dataSource));
+//        rc.register(ValidatingReader.class);
+//        rc.register(UnmarshallerResolver.class);
+//        HttpHandler requestHandler =
+//                RuntimeDelegate.getInstance().createEndpoint(new RestfulAdage(),
+//                        HttpHandler.class);
+//        server.createContext(uri, requestHandler);
 
         // create and start a new instance of grizzly http server
         // exposing the Jersey application at BASE_URI
