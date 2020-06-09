@@ -1,10 +1,12 @@
-package com.example.model.response;
+package com.example.model.response.getBalance;
 
 import com.example.model.Extra;
+import com.example.model.response.IResponse;
+import com.example.model.response.ResponseXml;
 
 import java.math.BigDecimal;
 
-public class GetBalanceResponse implements IResponse{
+public class GetBalanceResponse implements IResponse {
     private ResponseXml responseXml;
 
     public GetBalanceResponse(String resultCode) {

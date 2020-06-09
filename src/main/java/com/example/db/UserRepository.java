@@ -1,6 +1,6 @@
 package com.example.db;
 
-import com.example.model.GetBalance.Balance;
+import com.example.model.response.getBalance.Balance;
 import com.example.model.User;
 import org.springframework.jdbc.core.RowMapper;
 

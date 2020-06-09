@@ -1,4 +1,4 @@
-package com.example.model.GetBalance;
+package com.example.model.response.getBalance;
 
 public enum ResultCode {
     SUCCESS(0),

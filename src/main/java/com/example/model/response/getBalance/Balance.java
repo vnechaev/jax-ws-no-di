@@ -1,4 +1,4 @@
-package com.example.model.GetBalance;
+package com.example.model.response.getBalance;
 
 import java.math.BigDecimal;
 

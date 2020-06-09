@@ -1,14 +1,16 @@
 package com.example.db.balance;
 
 import com.example.model.User;
-import com.example.model.addUser.ResultCode;
+import com.example.model.response.IResponse;
+import com.example.model.response.addUser.ResultCode;
 import com.example.model.request.RequestUser;
+import com.example.model.response.getBalance.GetBalanceResponse;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.math.BigDecimal;
 
-public class BalanceDAO implements IBalanceDB{
+public class BalanceDAO implements IBalanceDB {
     private final JdbcTemplate jdbcTemplate;
     private String addUserQuery;
 
@@ -21,29 +23,36 @@ public class BalanceDAO implements IBalanceDB{
         this.addUserQuery = String.format("insert into %s values (?, ?, ?)", tableName);
     }
 
-    public ResultCode addUser(RequestUser request) throws Exception {
+
+
+    @Override
+    public IResponse getBalance(RequestUser request) throws Exception {
         User user = request.user();
         try {
-            String sql = "SELECT COUNT(1) FROM demodb.users WHERE login = ?";
-            boolean exists = false;
-            int count = jdbcTemplate.queryForObject(sql, new Object[] { user.getLogin() }, Integer.class);
-            exists = count > 0;
-            if (exists){
-                return ResultCode.LOGIN_EXIST;
+            boolean exists = userExists(user);
+            if (exists) {
+                return new GetBalanceResponse(ResultCode.LOGIN_EXIST.getCode());
             }
-            jdbcTemplate.update("insert into demodb.users values (?, ?, ?)", null, user.getLogin(), user.getPassword());
-            return ResultCode.SUCCESS;
+            String sql = "select balance from demodb.balance where login = ?";
+            BigDecimal balance = jdbcTemplate.queryForObject(sql, new Object[]{user.getLogin()}, BigDecimal.class);
+
+            return new GetBalanceResponse(ResultCode.SUCCESS.getCode(), balance);
 
         } catch (DataAccessException e) {
             System.out.println("error occured");
             e.printStackTrace();
             System.out.println(e.getMessage());
-            return ResultCode.TECHNICAL_ERROR;
+            return new GetBalanceResponse(ResultCode.TECHNICAL_ERROR.getCode());
         }
+
     }
 
-    @Override
-    public BigDecimal getBalance(User user) {
-        return null;
+
+    private boolean userExists(User user) {
+        String sql = "SELECT COUNT(1) FROM demodb.users WHERE login = ?";
+        boolean exists = false;
+        int count = jdbcTemplate.queryForObject(sql, new Object[]{user.getLogin()}, Integer.class);
+        exists = count > 0;
+        return exists;
     }
 }

@@ -1,4 +1,4 @@
-package com.example.model.addUser;
+package com.example.model.response.addUser;
 
 public enum ResultCode {
     SUCCESS("0"),

@@ -27,8 +27,7 @@ public class Main {
      */
     public static HttpServer startServer(Properties properties) {
         ConfigDbTables dbTables = new ConfigDbTables(properties);
-        ConfigDbConnection configDbConnection = new ConfigDbConnection(properties);
-        DriverManagerDataSource dataSource = new DataSourceBuilder(configDbConnection)
+        DriverManagerDataSource dataSource = new DataSourceBuilder(properties)
                 .buildDataSource();
 
         // create a resource config that scans for JAX-RS resources and providers
