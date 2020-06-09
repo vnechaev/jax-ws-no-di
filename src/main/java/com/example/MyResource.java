@@ -10,6 +10,8 @@ import com.example.model.request.RequestXml;
 import com.example.model.response.AddUserResponse;
 import com.example.model.response.IResponse;
 import com.example.model.response.ResponseXml;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
@@ -25,7 +27,7 @@ import java.io.StringReader;
  */
 @Path("myresource")
 public class MyResource {
-
+    private static final Logger logger = LoggerFactory.getLogger(MyResource.class);
 
     public MyResource(DataSource dataSource, ConfigDbTables configDbTables) {
         this(new JdbcTemplate(dataSource), configDbTables);
@@ -46,13 +48,13 @@ public class MyResource {
     @Produces(MediaType.APPLICATION_XML)
 //    @Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML})
     public ResponseXml addUser(String xmRequest) throws Exception {
-        System.out.println(xmRequest);
+        logger.debug(xmRequest);
         RequestXml requestXml = unMarshall(xmRequest);
-        System.out.println(requestXml);
+        logger.debug(requestXml.getRequestType());
         ProcessedRequest addUserRequest = new ProcessedRequest(requestXml);
         ResultCode resultCode = userDAO.addUser(addUserRequest);
         AddUserResponse addUserResponse = new AddUserResponse(resultCode.getCode());
-        System.out.println(addUserResponse.response());
+        logger.debug("ResultCode " + addUserResponse.response().getResultCode());
         return addUserResponse.response();
     }
 
@@ -61,13 +63,13 @@ public class MyResource {
     @Produces(MediaType.APPLICATION_XML)
 //    @Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML})
     public ResponseXml getBalance(String xmRequest) throws Exception {
-        System.out.println(xmRequest);
+        logger.debug(xmRequest);
         RequestXml requestXml = unMarshall(xmRequest);
 
-        System.out.println(requestXml);
+        logger.debug(requestXml.getRequestType());
         ProcessedRequest addUserRequest = new ProcessedRequest(requestXml);
         IResponse response = userDAO.getBalance(addUserRequest);
-        System.out.println(response.response());
+        logger.debug(response.response().getResultCode());
         return response.response();
     }
 

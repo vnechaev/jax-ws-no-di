@@ -11,10 +11,10 @@ public class ConfigDbConnection {
 
     public ConfigDbConnection(Properties properties) {
         this(
-                properties.getProperty("driverName"),
-                properties.getProperty("url"),
-                properties.getProperty("userName"),
-                properties.getProperty("password")
+                properties.getProperty("db.connection.driverName"),
+                properties.getProperty("db.connection.url"),
+                properties.getProperty("db.connection.userName"),
+                properties.getProperty("db.connection.password")
         );
     }
 

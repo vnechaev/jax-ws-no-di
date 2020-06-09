@@ -26,16 +26,8 @@ public class Main {
      * @return Grizzly HTTP server.
      */
     public static HttpServer startServer(Properties properties) {
-        ConfigDbTables configDbTables = new ConfigDbTables(
-                "demodb.users",
-                "demodb.balance"
-        );
-        ConfigDbConnection configDbConnection = new ConfigDbConnection(
-                "com.mysql.cj.jdbc.Driver",
-                "jdbc:mysql://localhost:3306/demodb?useUnicode=true&serverTimezone=UTC",
-                "demouser",
-                "demouser"
-        );
+        ConfigDbTables dbTables = new ConfigDbTables(properties);
+        ConfigDbConnection configDbConnection = new ConfigDbConnection(properties);
         DriverManagerDataSource dataSource = new DataSourceBuilder(configDbConnection)
                 .buildDataSource();
 
@@ -43,7 +35,7 @@ public class Main {
         // in com.example package
 //        final ResourceConfig rc = new ResourceConfig();
         final ResourceConfig rc = new ResourceConfig().packages("com.example");
-        rc.register(new MyResource(dataSource, configDbTables));
+        rc.register(new MyResource(dataSource, dbTables));
 //        rc.register(ValidatingReader.class);
 //        rc.register(UnmarshallerResolver.class);
 
@@ -54,13 +46,11 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        String propsFileName = "simple-service/config.properties";
+        String propsFileName = "config.properties";
         if (args.length > 0) {
             propsFileName = args[0];
         }
-
-//        Properties props = new FileProperties(propsFileName).loadConfig();
-        Properties props = new Properties();
+        Properties props = new FileProperties(propsFileName).loadConfig();
 
         final HttpServer server = startServer(props);
         System.out.println(String.format("Jersey app started with WADL available at "
