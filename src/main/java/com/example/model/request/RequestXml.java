@@ -40,7 +40,6 @@ public class RequestXml {
     public String toString() {
         return "Request{" +
                 "requestType='" + requestType + '\'' +
-                ", extraList=" + extraList +
                 '}';
     }
 }

@@ -1,5 +1,6 @@
 package com.example;
 
+import com.example.configuration.ConfigDbTables;
 import com.example.db.IUserDb;
 import com.example.db.UserDAO;
 import com.example.model.Extra;
@@ -25,12 +26,13 @@ import java.io.StringReader;
 @Path("myresource")
 public class MyResource {
 
-    public MyResource(DataSource dataSource) {
-        this(new JdbcTemplate(dataSource));
+
+    public MyResource(DataSource dataSource, ConfigDbTables configDbTables) {
+        this(new JdbcTemplate(dataSource), configDbTables);
     }
 
-    public MyResource(JdbcTemplate jdbcTemplate) {
-        this(new UserDAO(jdbcTemplate));
+    public MyResource(JdbcTemplate jdbcTemplate, ConfigDbTables configDbTables) {
+        this(new UserDAO(jdbcTemplate, configDbTables));
     }
 
     public MyResource(IUserDb userDb) {

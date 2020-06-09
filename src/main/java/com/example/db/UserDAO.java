@@ -1,5 +1,6 @@
 package com.example.db;
 
+import com.example.configuration.ConfigDbTables;
 import com.example.model.User;
 import com.example.model.addUser.ResultCode;
 import com.example.model.request.RequestUser;
@@ -13,9 +14,11 @@ import java.math.BigDecimal;
 public class UserDAO implements IUserDb {
     private final JdbcTemplate jdbcTemplate;
     private String addUserQuery;
+    private ConfigDbTables configDbTables;
 
-    public UserDAO(JdbcTemplate jdbcTemplate) {
+    public UserDAO(JdbcTemplate jdbcTemplate, ConfigDbTables configDbTables) {
         this.jdbcTemplate = jdbcTemplate;
+        this.configDbTables = configDbTables;
     }
 
     public UserDAO(JdbcTemplate jdbcTemplate, String tableName) {
