@@ -1,4 +1,4 @@
-package com.example.db;
+package com.example.db.balance;
 
 import com.example.model.User;
 

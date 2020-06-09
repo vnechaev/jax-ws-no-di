@@ -1,4 +1,4 @@
-package com.example.db;
+package com.example.db.user;
 
 import com.example.model.User;
 import com.example.model.addUser.ResultCode;

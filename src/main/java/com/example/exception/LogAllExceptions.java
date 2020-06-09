@@ -1,4 +1,4 @@
-package com.example;
+package com.example.exception;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -14,14 +14,14 @@ import org.slf4j.event.Level;
 @Provider
 public class LogAllExceptions implements ExtendedExceptionMapper<Throwable> {
 
-    private static final Logger logger = LoggerFactory.getLogger(LogAllExceptions.class);
+    private static final Logger log = LoggerFactory.getLogger(LogAllExceptions.class);
 
     @Override
     public boolean isMappable(Throwable thro) {
         /* Primarily, we don't want to log client errors (i.e. 400's) as an error. */
         Level level = isServerError(thro) ? Level.ERROR : Level.INFO;
 //        /* TODO add information about the request (using @Context). */
-        logger.debug("ThrowableLogger_ExceptionMapper logging error.", thro);
+        log.debug("ThrowableLogger_ExceptionMapper logging error.", thro);
         return false;
     }
 
@@ -38,7 +38,7 @@ public class LogAllExceptions implements ExtendedExceptionMapper<Throwable> {
     @Override
     public Response toResponse(Throwable throwable) {
         //assert false;
-        logger.debug("ThrowableLogger_ExceptionMapper.toResponse: This should not have been called.");
+        log.debug("ThrowableLogger_ExceptionMapper.toResponse: This should not have been called.");
         throw new RuntimeException("This should not have been called");
     }
 

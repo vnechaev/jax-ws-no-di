@@ -22,7 +22,7 @@ public class ProcessedRequest implements RequestUser {
             for (Extra extra : requestXml.getExtraList()) {
                 map.put(extra.getName(), extra.getValue());
             }
-            return new User(map.get("login"), map.get("password"));
+            return new User(map.get("login"), map.get("password"));//TODO map.get() is bad
         }
     }
 }

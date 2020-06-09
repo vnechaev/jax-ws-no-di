@@ -1,4 +1,4 @@
-package com.example.db;
+package com.example.db.user;
 
 import com.example.configuration.ConfigDbTables;
 import com.example.model.User;
