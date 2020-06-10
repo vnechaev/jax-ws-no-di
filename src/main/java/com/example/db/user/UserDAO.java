@@ -16,7 +16,7 @@ public class UserDAO implements IUserDb {
     private static final Logger log = LoggerFactory.getLogger(UserDAO.class);
     private final JdbcTemplate jdbcTemplate;
     private String checkExistanceUser = "select COUNT(1) FROM %s WHERE login = ?";
-    private String addUserQuery = "insert into %s values (?, ?, ?)";//TODO change
+    private String addUserQuery = "insert into %s (login, password) values (?, ?)";
     private String createBalanceQuery = "insert into %s (login, balance) values (?, 0)";
 
     public UserDAO(JdbcTemplate jdbcTemplate, ConfigDbTables configDbTables) {
@@ -36,8 +36,9 @@ public class UserDAO implements IUserDb {
                 log.debug("User already exists");
                 return new AddUserResponse(ResultCode.LOGIN_EXIST);
             }
-            jdbcTemplate.update(addUserQuery, null, user.getLogin(), user.getPassword());
+            jdbcTemplate.update(addUserQuery,  user.getLogin(), user.getPassword());
             jdbcTemplate.update(createBalanceQuery, user.getLogin());
+            log.debug("User was successfully added");
             return new AddUserResponse(ResultCode.SUCCESS);
 
         } catch (Exception e) {
