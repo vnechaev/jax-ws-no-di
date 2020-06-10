@@ -36,6 +36,7 @@ public class UserDAO implements IUserDb {
                 log.debug("User already exists");
                 return new AddUserResponse(ResultCode.LOGIN_EXIST);
             }
+            //execute with one jdbc-template invocation?
             jdbcTemplate.update(addUserQuery,  user.getLogin(), user.getPassword());
             jdbcTemplate.update(createBalanceQuery, user.getLogin());
             log.debug("User was successfully added");
