@@ -40,9 +40,4 @@ public class ConfigDbConnection {
     public String getPassword() {
         return password;
     }
-
-    //            dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-//        dataSource.setUrl("jdbc:mysql://localhost:3306/demodb?useUnicode=true&serverTimezone=UTC");
-//        dataSource.setUsername("demouser");
-//        dataSource.setPassword("demouser");
 }

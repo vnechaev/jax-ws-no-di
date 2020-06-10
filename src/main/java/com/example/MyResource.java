@@ -70,6 +70,7 @@ public class MyResource {
         return resultResponse;
     }
 
+    //TODO use built-in JAX-RS JAXB support
     private RequestXml unMarshall(String xmRequest) {
         RequestXml requestXml;
         try {

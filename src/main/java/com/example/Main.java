@@ -3,6 +3,7 @@ package com.example;
 import com.example.configuration.ConfigDbTables;
 import com.example.configuration.DataSourceBuilder;
 import com.example.configuration.FileProperties;
+import com.example.exception.LogAllExceptions;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -12,30 +13,19 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Properties;
 
-/**
- * Main class.
- */
+
 public class Main {
     // Base URI the Grizzly HTTP server will listen on
     public static final String BASE_URI = "http://localhost:8080/myapp/";
 
-    /**
-     * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
-     *
-     * @return Grizzly HTTP server.
-     */
     public static HttpServer startServer(Properties properties) {
         ConfigDbTables dbTables = new ConfigDbTables(properties);
         DriverManagerDataSource dataSource = new DataSourceBuilder(properties)
                 .buildDataSource();
-//TODO create exception and exception handler to return predefined response
-        // create a resource config that scans for JAX-RS resources and providers
-        // in com.example package
-        final ResourceConfig rc = new ResourceConfig().packages("com.example");
+        final ResourceConfig rc = new ResourceConfig();
         rc.register(new MyResource(dataSource, dbTables));
+        rc.register(LogAllExceptions.class);
 
-        // create and start a new instance of grizzly http server
-        // exposing the Jersey application at BASE_URI
         HttpServer server = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
         return server;
     }
@@ -54,6 +44,6 @@ public class Main {
         server.shutdown();
     }
     //TODO add shutdown hook
-    //TODO assembly to executable jar
+    //TODO assembly executable jar
 }
 
