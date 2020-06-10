@@ -45,8 +45,8 @@ public class BalanceDAO implements IBalanceDB {
             log.debug("balance retrieved");
             return new GetBalanceResponse(ResultCode.SUCCESS, balance);
 
-        } catch (DataAccessException e) {
-            log.error("Error while retrieving balance");
+        } catch (Exception e) {
+            log.error("Error while retrieving balance", e);
             return new GetBalanceResponse(ResultCode.TECHNICAL_ERROR);
         }
 

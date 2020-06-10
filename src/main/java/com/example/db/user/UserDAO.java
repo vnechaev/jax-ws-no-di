@@ -1,18 +1,22 @@
 package com.example.db.user;
 
 import com.example.configuration.ConfigDbTables;
+import com.example.db.balance.BalanceDAO;
 import com.example.model.User;
 import com.example.model.response.addUser.AddUserResponse;
 import com.example.model.response.addUser.ResultCode;
 import com.example.model.request.RequestUser;
 import com.example.model.response.IResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class UserDAO implements IUserDb {
+    private static final Logger log = LoggerFactory.getLogger(UserDAO.class);
     private final JdbcTemplate jdbcTemplate;
     private String checkExistanceUser = "select COUNT(1) FROM %s WHERE login = ?";
-    private String addUserQuery = "insert into %s values (?, ?, ?)";
+    private String addUserQuery = "insert into %s values (?, ?, ?)";//TODO change
     private String createBalanceQuery = "insert into %s (login, balance) values (?, 0)";
 
     public UserDAO(JdbcTemplate jdbcTemplate, ConfigDbTables configDbTables) {
@@ -29,16 +33,15 @@ public class UserDAO implements IUserDb {
         try {
             boolean exists = userExists(user);
             if (exists) {
+                log.debug("User already exists");
                 return new AddUserResponse(ResultCode.LOGIN_EXIST);
             }
             jdbcTemplate.update(addUserQuery, null, user.getLogin(), user.getPassword());
             jdbcTemplate.update(createBalanceQuery, user.getLogin());
             return new AddUserResponse(ResultCode.SUCCESS);
 
-        } catch (DataAccessException e) {
-            System.out.println("error occured");
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            log.error("Error occured during adding user" , e);
             return new AddUserResponse(ResultCode.TECHNICAL_ERROR);
         }
     }
