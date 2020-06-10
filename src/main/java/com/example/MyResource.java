@@ -1,6 +1,7 @@
 package com.example;
 
 import com.example.configuration.ConfigDbTables;
+import com.example.db.balance.BalanceDAO;
 import com.example.db.balance.IBalanceDB;
 import com.example.db.user.IUserDb;
 import com.example.db.user.UserDAO;
@@ -22,34 +23,37 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.StringReader;
-import java.util.Arrays;
 
 @Path("myresource")
 public class MyResource {
     private static final Logger log = LoggerFactory.getLogger(MyResource.class);
+
+    private IUserDb userDAO;
+    private IBalanceDB balanceDAO;
 
     public MyResource(DataSource dataSource, ConfigDbTables configDbTables) {
         this(new JdbcTemplate(dataSource), configDbTables);
     }
 
     public MyResource(JdbcTemplate jdbcTemplate, ConfigDbTables configDbTables) {
-        this(new UserDAO(jdbcTemplate, configDbTables));
+        this(
+                new UserDAO(jdbcTemplate, configDbTables),
+                new BalanceDAO(jdbcTemplate, configDbTables)
+        );
     }
 
-    public MyResource(IUserDb userDb) {
-        this.userDAO = userDb;
+    public MyResource(IUserDb userDAO, IBalanceDB balanceDAO) {
+        this.userDAO = userDAO;
+        this.balanceDAO = balanceDAO;
     }
-
-    private IUserDb userDAO;
-    private IBalanceDB balanceDAO;
 
     @POST
     @Produces(MediaType.APPLICATION_XML)
     public ResponseXml addUser(String xmRequest) throws Exception {
-        log.debug("Request: " +xmRequest);
+        log.debug("Request: " + xmRequest);
         RequestXml requestXml = unMarshall(xmRequest);
         IResponse resultResponse = handleWithDB(requestXml);
-        log.debug("ResultCode " + resultResponse.response().getResultCode());
+        log.debug("ResultCode: " + resultResponse.response().getResultCode());
         return resultResponse.response();
     }
 

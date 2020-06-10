@@ -9,13 +9,13 @@ import java.math.BigDecimal;
 public class GetBalanceResponse implements IResponse {
     private ResponseXml responseXml;
 
-    public GetBalanceResponse(String resultCode) {
+    public GetBalanceResponse(ResultCode resultCode) {
         this(resultCode, BigDecimal.ZERO);
     }
 
-    public GetBalanceResponse(String resultCode, BigDecimal balance) {
+    public GetBalanceResponse(ResultCode resultCode, BigDecimal balance) {
         ResponseXml responseXml = new ResponseXml();
-        responseXml.setResultCode(resultCode);
+        responseXml.setResultCode(resultCode.getCode());
         responseXml.getExtraList().add(new Extra("balance", String.valueOf(balance)));
         this.responseXml = responseXml;
     }

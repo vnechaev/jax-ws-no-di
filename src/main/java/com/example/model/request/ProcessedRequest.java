@@ -15,14 +15,10 @@ public class ProcessedRequest implements RequestUser {
 
     @Override
     public User user() throws Exception {
-        if (!requestXml.getRequestType().equals(RequestTypes.ADD_USER.getName())) {
-            throw new Exception("Incorrect type");
-        } else {
-            Map<String, String> map = new HashMap<>();
-            for (Extra extra : requestXml.getExtraList()) {
-                map.put(extra.getName(), extra.getValue());
-            }
-            return new User(map.get("login"), map.get("password"));//TODO map.get() is bad
+        Map<String, String> map = new HashMap<>();
+        for (Extra extra : requestXml.getExtraList()) {
+            map.put(extra.getName(), extra.getValue());
         }
+        return new User(map.get("login"), map.get("password"));//TODO map.get() is bad
     }
 }

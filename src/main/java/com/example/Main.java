@@ -29,14 +29,11 @@ public class Main {
         ConfigDbTables dbTables = new ConfigDbTables(properties);
         DriverManagerDataSource dataSource = new DataSourceBuilder(properties)
                 .buildDataSource();
-
+//TODO create exception and exception handler to return predefined response
         // create a resource config that scans for JAX-RS resources and providers
         // in com.example package
-//        final ResourceConfig rc = new ResourceConfig();
         final ResourceConfig rc = new ResourceConfig().packages("com.example");
         rc.register(new MyResource(dataSource, dbTables));
-//        rc.register(ValidatingReader.class);
-//        rc.register(UnmarshallerResolver.class);
 
         // create and start a new instance of grizzly http server
         // exposing the Jersey application at BASE_URI
@@ -55,7 +52,7 @@ public class Main {
         System.out.println(String.format("Jersey app started with WADL available at "
                 + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
         System.in.read();
-        server.stop();
+        server.shutdown() ;
     }
 }
 

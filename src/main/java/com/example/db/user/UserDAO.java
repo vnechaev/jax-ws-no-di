@@ -11,17 +11,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class UserDAO implements IUserDb {
     private final JdbcTemplate jdbcTemplate;
-    private String addUserQuery;
-    private ConfigDbTables configDbTables;
+    private String checkExistanceUser = "select COUNT(1) FROM %s WHERE login = ?";
+    private String addUserQuery = "insert into %s values (?, ?, ?)";
+    private String createBalanceQuery = "insert into %s (login, balance) values (?, 0)";
 
     public UserDAO(JdbcTemplate jdbcTemplate, ConfigDbTables configDbTables) {
         this.jdbcTemplate = jdbcTemplate;
-        this.configDbTables = configDbTables;
-    }
+        this.checkExistanceUser = String.format(checkExistanceUser, configDbTables.getUserDb());
+        this.addUserQuery = String.format(addUserQuery, configDbTables.getUserDb());
+        this.createBalanceQuery = String.format(createBalanceQuery, configDbTables.getBalanceDb());
 
-    public UserDAO(JdbcTemplate jdbcTemplate, String tableName) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.addUserQuery = String.format("insert into %s values (?, ?, ?)", tableName);
     }
 
     @Override
@@ -32,8 +31,8 @@ public class UserDAO implements IUserDb {
             if (exists) {
                 return new AddUserResponse(ResultCode.LOGIN_EXIST);
             }
-            jdbcTemplate.update("insert into demodb.users values (?, ?, ?)", null, user.getLogin(), user.getPassword());
-            jdbcTemplate.update("insert into demodb.balance (login, balance) values (?, 0)", user.getLogin());
+            jdbcTemplate.update(addUserQuery, null, user.getLogin(), user.getPassword());
+            jdbcTemplate.update(createBalanceQuery, user.getLogin());
             return new AddUserResponse(ResultCode.SUCCESS);
 
         } catch (DataAccessException e) {
@@ -45,10 +44,7 @@ public class UserDAO implements IUserDb {
     }
 
     private boolean userExists(User user) {
-        String sql = "SELECT COUNT(1) FROM demodb.users WHERE login = ?";
-        boolean exists = false;
-        int count = jdbcTemplate.queryForObject(sql, new Object[]{user.getLogin()}, Integer.class);
-        exists = count > 0;
-        return exists;
+        int count = jdbcTemplate.queryForObject(checkExistanceUser, new Object[]{user.getLogin()}, Integer.class);
+        return count > 0;
     }
 }

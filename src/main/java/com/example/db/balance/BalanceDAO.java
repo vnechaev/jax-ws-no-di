@@ -1,58 +1,64 @@
 package com.example.db.balance;
 
+import com.example.configuration.ConfigDbTables;
 import com.example.model.User;
-import com.example.model.response.IResponse;
-import com.example.model.response.addUser.ResultCode;
 import com.example.model.request.RequestUser;
+import com.example.model.response.IResponse;
 import com.example.model.response.getBalance.GetBalanceResponse;
+import com.example.model.response.getBalance.ResultCode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.math.BigDecimal;
 
 public class BalanceDAO implements IBalanceDB {
+    private static final Logger log = LoggerFactory.getLogger(BalanceDAO.class);
     private final JdbcTemplate jdbcTemplate;
-    private String addUserQuery;
+    private String getBalance = "select balance from %s where login = ?";
+    private String getPassword = "select password FROM %s WHERE login = ?";
+    private String checkExistanceUser = "select COUNT(1) FROM %s WHERE login = ?";
 
-    public BalanceDAO(JdbcTemplate jdbcTemplate) {
+    public BalanceDAO(JdbcTemplate jdbcTemplate, ConfigDbTables configDbTables) {
         this.jdbcTemplate = jdbcTemplate;
+        this.getBalance = String.format(getBalance, configDbTables.getBalanceDb());
+        this.getPassword = String.format(getPassword, configDbTables.getUserDb());
+        this.checkExistanceUser = String.format(checkExistanceUser, configDbTables.getUserDb());
+
     }
-
-    public BalanceDAO(JdbcTemplate jdbcTemplate, String tableName) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.addUserQuery = String.format("insert into %s values (?, ?, ?)", tableName);
-    }
-
-
 
     @Override
     public IResponse getBalance(RequestUser request) throws Exception {
         User user = request.user();
         try {
-            boolean exists = userExists(user);
-            if (exists) {
-                return new GetBalanceResponse(ResultCode.LOGIN_EXIST.getCode());
+            if (userNotExists(user)) {
+                log.debug("User not exist");
+                return new GetBalanceResponse(ResultCode.USER_NOT_EXISTS);
             }
-            String sql = "select balance from demodb.balance where login = ?";
-            BigDecimal balance = jdbcTemplate.queryForObject(sql, new Object[]{user.getLogin()}, BigDecimal.class);
+            if (passwordWrong(user)) {
+                log.debug("Password incorrect");
+                return new GetBalanceResponse(ResultCode.PASSWORD_INCORRECT);
+            }
 
-            return new GetBalanceResponse(ResultCode.SUCCESS.getCode(), balance);
+            BigDecimal balance = jdbcTemplate.queryForObject(getBalance, new Object[]{user.getLogin()}, BigDecimal.class);
+            log.debug("balance retrieved");
+            return new GetBalanceResponse(ResultCode.SUCCESS, balance);
 
         } catch (DataAccessException e) {
-            System.out.println("error occured");
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-            return new GetBalanceResponse(ResultCode.TECHNICAL_ERROR.getCode());
+            log.error("Error while retrieving balance");
+            return new GetBalanceResponse(ResultCode.TECHNICAL_ERROR);
         }
 
     }
 
+    private boolean passwordWrong(User user) {
+        String passwordFromDB = jdbcTemplate.queryForObject(getPassword, new Object[]{user.getLogin()}, String.class);
+        return !passwordFromDB.equals(user.getPassword());
+    }
 
-    private boolean userExists(User user) {
-        String sql = "SELECT COUNT(1) FROM demodb.users WHERE login = ?";
-        boolean exists = false;
-        int count = jdbcTemplate.queryForObject(sql, new Object[]{user.getLogin()}, Integer.class);
-        exists = count > 0;
-        return exists;
+    private boolean userNotExists(User user) {
+        int count = jdbcTemplate.queryForObject(checkExistanceUser, new Object[]{user.getLogin()}, Integer.class);
+        return count < 0;
     }
 }
