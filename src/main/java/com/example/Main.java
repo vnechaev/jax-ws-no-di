@@ -1,6 +1,5 @@
 package com.example;
 
-import com.example.configuration.ConfigDbConnection;
 import com.example.configuration.ConfigDbTables;
 import com.example.configuration.DataSourceBuilder;
 import com.example.configuration.FileProperties;
@@ -52,7 +51,9 @@ public class Main {
         System.out.println(String.format("Jersey app started with WADL available at "
                 + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
         System.in.read();
-        server.shutdown() ;
+        server.shutdown();
     }
+    //TODO add shutdown hook
+    //TODO assembly to executable jar
 }
 

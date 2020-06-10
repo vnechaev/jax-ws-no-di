@@ -20,7 +20,6 @@ public class LogAllExceptions implements ExtendedExceptionMapper<Throwable> {
     public boolean isMappable(Throwable thro) {
         /* Primarily, we don't want to log client errors (i.e. 400's) as an error. */
         Level level = isServerError(thro) ? Level.ERROR : Level.INFO;
-//        /* TODO add information about the request (using @Context). */
         log.debug("ThrowableLogger_ExceptionMapper logging error.", thro);
         return false;
     }
